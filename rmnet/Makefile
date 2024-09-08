@@ -1,28 +1,17 @@
 # Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
 # SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
 
-#obj-m := GobiNet.o ../InfParser/qtiDevInf.o
-obj-m := GobiNet.o
+obj-m += GobiNet.o
 GobiNet-objs := qmap.o GobiUSBNet.o QMIDevice.o QMI.o
-KDIR := /lib/modules/$(shell uname -r)/build
-PWD := $(shell pwd)
-OUTPUTDIR=/lib/modules/$(shell uname -r)/kernel/drivers/net/usb/
+
 OS_RELEASE = $(shell cat /etc/os-release | grep PRETTY_NAME)
 
 ifneq (,$(findstring Red Hat Enterprise Linux,$(OS_RELEASE)))
-EXTRA_CFLAGS:= -D QCUSB_RHEL
+EXTRA_CFLAGS += -DQCUSB_RHEL
 endif
 
-all: clean
-	$(MAKE) -C $(KDIR) M=$(PWD) modules
-
-install: all
-	mkdir -p $(OUTPUTDIR)
-	cp -f GobiNet.ko $(OUTPUTDIR)
-	depmod
+all:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 
 clean:
-	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions Module.* modules.order
-
-
-
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean

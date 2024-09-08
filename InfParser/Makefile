@@ -1,15 +1,10 @@
 # Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
 # SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
 
-obj-m := qtiDevInf.o
-KDIR := /lib/modules/$(shell uname -r)/build
-PWD := $(shell pwd)
+obj-m += qtiDevInf.o
 
-all: clean
-	$(MAKE) -C $(KDIR) M=$(PWD) modules
+all:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 
 clean:
-	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions Module.* modules.order *.ur-safe
-
-
-
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
